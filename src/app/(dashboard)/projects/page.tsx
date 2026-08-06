@@ -42,22 +42,22 @@ export default async function ProjectsPage() {
         .order('created_at', { ascending: false });
 
     return (
-    <div className="max-w-[1600px] mx-auto w-full flex flex-col gap-10">
+    <div className="flex flex-col gap-6 max-w-[1600px] mx-auto w-full">
       
       {/* Шапка страницы */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-[32px] font-bold text-slate-900 tracking-tight">Управление проектами</h1>
+          <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Управление проектами</h1>
           <p className="text-slate-500 text-[15px] mt-1.5">Добавляйте проекты и настраивайте доступы для команды.</p>
         </div>
 
         {/* Форма создания (спрятана под details для имитации модалки без JS) */}
         <details className="group relative">
-          <summary className="list-none cursor-pointer flex items-center gap-2 bg-[#6D28D9] hover:bg-[#5B21B6] text-white px-5 py-2.5 rounded-xl text-sm font-medium transition-colors shadow-md shadow-purple-500/20 select-none">
+          <summary className="list-none cursor-pointer flex items-center gap-2 bg-[#6D28D9] hover:bg-[#5B21B6] text-white px-5 py-2.5 rounded-xl text-sm font-medium transition-colors shadow-sm select-none">
             <Plus className="w-4 h-4" />
             Создать проект
           </summary>
-          <div className="absolute right-0 top-[calc(100%+12px)] z-50 bg-white border border-slate-100 rounded-[20px] p-6 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] w-[360px] cursor-default">
+          <div className="absolute right-0 top-[calc(100%+12px)] z-50 bg-white border border-slate-100/50 rounded-2xl p-6 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] w-[360px] cursor-default">
             <h3 className="text-lg font-bold text-slate-900 mb-5">Новый проект</h3>
             <form action={createProject} className="flex flex-col gap-4">
               <div className="flex flex-col gap-1.5">
@@ -68,7 +68,7 @@ export default async function ProjectsPage() {
                 <label htmlFor="domain" className="text-xs font-semibold text-slate-700">Домен (example.com)</label>
                 <input id="domain" name="domain" type="text" className="w-full bg-[#F5F3FA] border-0 rounded-xl py-3 px-4 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-[#6D28D9] text-sm transition-all" />
               </div>
-              <button type="submit" className="bg-[#6D28D9] hover:bg-[#5B21B6] text-white py-3 rounded-xl text-sm font-medium transition-colors shadow-md shadow-purple-500/20 mt-2">Добавить проект</button>
+              <button type="submit" className="bg-[#6D28D9] hover:bg-[#5B21B6] text-white py-3 rounded-xl text-sm font-medium transition-colors shadow-sm mt-2">Добавить проект</button>
             </form>
           </div>
         </details>
@@ -77,7 +77,7 @@ export default async function ProjectsPage() {
       {/* Список существующих проектов */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {projects?.map((project) => (
-          <div key={project.id} className="bg-white border border-slate-100/60 rounded-[24px] p-6 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.06)] flex flex-col gap-6 relative group overflow-hidden">
+          <div key={project.id} className="bg-white border border-slate-100/50 rounded-2xl p-6 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] flex flex-col gap-6 relative group overflow-hidden">
             {/* Декоративный фон */}
             <div className="absolute top-0 right-0 w-40 h-40 bg-purple-50/50 rounded-full -mr-20 -mt-20 transition-transform group-hover:scale-125 duration-700 pointer-events-none"></div>
 
@@ -134,7 +134,7 @@ export default async function ProjectsPage() {
         ))}
 
         {(!projects || projects.length === 0) && (
-          <div className="col-span-full flex flex-col items-center justify-center p-12 bg-white rounded-3xl border border-slate-200 border-dashed text-slate-500 min-h-[300px]">
+          <div className="col-span-full flex flex-col items-center justify-center p-12 bg-white border border-slate-200 border-dashed rounded-2xl min-h-[300px]">
              <Briefcase className="w-12 h-12 text-slate-300 mb-4" />
              <h3 className="text-lg font-bold text-slate-700 mb-1">У вас пока нет проектов</h3>
              <p className="text-sm">Создайте первый проект, нажав кнопку выше.</p>
