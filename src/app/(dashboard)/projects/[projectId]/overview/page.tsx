@@ -1,6 +1,7 @@
 import { getProjectMetrics } from '@/services/analytics/engine';
-import { ArrowUpRight, ArrowDownRight, DollarSign, Users, MousePointerClick, TrendingUp } from 'lucide-react';
+import { TrendingUp } from 'lucide-react';
 import DateRangePicker from '@/components/filters/DateRangePicker';
+import { StatCard } from '@/components/analytics/StatCard';
 
 export default async function ProjectOverviewPage(props: { 
     params: Promise<{ projectId: string }>;
@@ -20,52 +21,52 @@ export default async function ProjectOverviewPage(props: {
         new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB', maximumFractionDigits: 0 }).format(val);
 
     return (
-        <div className="flex flex-col gap-6 p-6">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <div className="flex flex-col gap-1">
-                    <h1 className="text-2xl font-bold text-slate-900">Аналитика проекта</h1>
-                    <p className="text-slate-500 text-sm">Обзор ключевых показателей проекта.</p>
+        <div className="flex flex-col gap-6 max-w-[1600px] mx-auto w-full">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Аналитика проекта</h1>
+
+                <div className="flex items-center gap-3">
+                    <DateRangePicker />
                 </div>
-                <DateRangePicker />
             </div>
 
-            {/* Карточки с метриками */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                
-                <MetricCard 
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+                <StatCard
                     title="Выручка" 
                     value={formatCurrency(metrics.totalRevenue)} 
-                    icon={<DollarSign className="text-emerald-400" />}
-                    trend="+12%" 
-                    isPositive={true} 
+                    trend="up"
+                    trendValue="12%"
+                    trendText="к прошлому периоду"
                 />
                 
-                <MetricCard 
+                <StatCard
                     title="ROMI" 
                     value={`${metrics.romi.toFixed(1)}%`} 
-                    icon={<TrendingUp className="text-blue-400" />}
-                    trend="+5%" 
-                    isPositive={true} 
+                    trend="up"
+                    trendValue="5%"
+                    trendText="к прошлому периоду"
                 />
 
-                <MetricCard 
+                <StatCard
                     title="Трафик (Сессии)" 
-                    value={metrics.totalTraffic.toString()} 
-                    icon={<MousePointerClick className="text-purple-400" />}
+                    value={metrics.totalTraffic.toString()}
+                    trend="up"
+                    trendValue="-"
+                    trendText="к прошлому периоду"
                 />
 
-                <MetricCard 
+                <StatCard
                     title="Лиды" 
                     value={metrics.totalLeads.toString()} 
-                    icon={<Users className="text-orange-400" />}
-                    subtitle={`Конверсия: ${metrics.conversionRate.toFixed(1)}%`}
+                    trend="up"
+                    trendValue={`Конверсия: ${metrics.conversionRate.toFixed(1)}%`}
+                    trendText="к прошлому периоду"
                 />
-
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4">
                 {/* Экономика */}
-                <div className="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm">
+                <div className="bg-white rounded-2xl p-6 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-slate-100/50">
                     <h2 className="text-lg font-semibold mb-6 flex items-center gap-2 text-slate-900">
                         <TrendingUp className="text-indigo-600" size={20} />
                         Юнит-экономика
@@ -87,44 +88,11 @@ export default async function ProjectOverviewPage(props: {
                 </div>
 
                 {/* Место под график */}
-                <div className="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm flex flex-col justify-center items-center text-slate-500 min-h-[300px]">
+                <div className="bg-white rounded-2xl p-6 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-slate-100/50 flex flex-col justify-center items-center text-slate-500 min-h-[300px]">
                     Здесь будет график Recharts
                     <div className="mt-2 text-sm text-center max-w-xs text-slate-500">Данные будут загружаться из сервиса аналитики с группировкой по дням.</div>
                 </div>
             </div>
-        </div>
-    );
-}
-
-interface MetricCardProps {
-    title: string;
-    value: string;
-    icon: React.ReactNode;
-    trend?: string;
-    isPositive?: boolean;
-    subtitle?: string;
-}
-
-function MetricCard({ title, value, icon, trend, isPositive, subtitle }: MetricCardProps) {
-    return (
-        <div className="bg-white border border-slate-50 rounded-2xl p-6 shadow-sm flex flex-col gap-4 relative overflow-hidden group hover:shadow-md transition-shadow">
-            <div className="flex justify-between items-start">
-                <span className="text-slate-500 font-medium text-sm">{title}</span>
-                <div className="p-2.5 bg-slate-50 rounded-xl text-slate-600">
-                    {icon}
-                </div>
-            </div>
-            
-            <div className="flex items-baseline gap-2">
-                <span className="text-3xl font-bold text-slate-900">{value}</span>
-                {trend && (
-                    <span className={`text-xs font-medium flex items-center px-1.5 py-0.5 rounded-md ${isPositive ? 'text-emerald-600 bg-emerald-50' : 'text-red-600 bg-red-50'}`}>
-                        {isPositive ? <ArrowUpRight size={14} className="mr-0.5" /> : <ArrowDownRight size={14} className="mr-0.5" />}
-                        {trend}
-                    </span>
-                )}
-            </div>
-            {subtitle && <div className="text-xs text-slate-500 mt-auto pt-2 font-medium">{subtitle}</div>}
         </div>
     );
 }
