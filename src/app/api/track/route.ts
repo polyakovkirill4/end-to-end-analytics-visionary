@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/supabase/admin';
+import { getSupabaseAdmin } from '@/lib/supabase/admin';
 
 export async function POST(req: Request) {
     try {
@@ -14,7 +14,7 @@ export async function POST(req: Request) {
         }
 
         // 1. Поиск проекта по API-ключу
-        const { data: project, error: projectError } = await supabaseAdmin
+        const { data: project, error: projectError } = await getSupabaseAdmin()
             .from('projects')
             .select('id')
             .eq('api_key', apiKey)
@@ -28,7 +28,7 @@ export async function POST(req: Request) {
         }
 
         // 2. Поиск существующей сессии (по куке)
-        let { data: session } = await supabaseAdmin
+        let { data: session } = await getSupabaseAdmin()
             .from('sessions')
             .select('id')
             .eq('project_id', project.id)
@@ -41,7 +41,7 @@ export async function POST(req: Request) {
         const hasNewUtm = utmSource || utmCampaign;
         
         if (!session || hasNewUtm) {
-            const { data: newSession, error: sessionError } = await supabaseAdmin
+            const { data: newSession, error: sessionError } = await getSupabaseAdmin()
                 .from('sessions')
                 .insert({
                     project_id: project.id,
@@ -63,7 +63,7 @@ export async function POST(req: Request) {
         }
 
         // 4. Фиксация просмотра страницы (Pageview)
-        await supabaseAdmin.from('pageviews').insert({
+        await getSupabaseAdmin().from('pageviews').insert({
             session_id: session.id,
             page_url: pageUrl
         });

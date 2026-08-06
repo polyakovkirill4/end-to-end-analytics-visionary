@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/supabase/admin';
+import { getSupabaseAdmin } from '@/lib/supabase/admin';
 
 export async function POST(req: Request) {
     try {
@@ -9,9 +9,9 @@ export async function POST(req: Request) {
         }
 
         // Очищаем старые данные проекта перед сидированием, чтобы можно было перезапускать скрипт
-        await supabaseAdmin.from('ad_costs').delete().eq('project_id', projectId);
-        await supabaseAdmin.from('leads').delete().eq('project_id', projectId);
-        await supabaseAdmin.from('sessions').delete().eq('project_id', projectId);
+        await getSupabaseAdmin().from('ad_costs').delete().eq('project_id', projectId);
+        await getSupabaseAdmin().from('leads').delete().eq('project_id', projectId);
+        await getSupabaseAdmin().from('sessions').delete().eq('project_id', projectId);
 
         // Список источников трафика для генерации
         const channels = [
@@ -84,7 +84,7 @@ export async function POST(req: Request) {
         }
 
         // Загружаем сессии в базу
-        const { data: createdSessions, error: sessionsError } = await supabaseAdmin
+        const { data: createdSessions, error: sessionsError } = await getSupabaseAdmin()
             .from('sessions')
             .insert(sessionsToInsert)
             .select('id, client_id, created_at');
@@ -94,7 +94,7 @@ export async function POST(req: Request) {
         }
 
         // Загружаем расходы на рекламу
-        const { error: costsError } = await supabaseAdmin
+        const { error: costsError } = await getSupabaseAdmin()
             .from('ad_costs')
             .insert(costsToInsert);
         if (costsError) throw new Error(costsError.message);
@@ -122,7 +122,7 @@ export async function POST(req: Request) {
             }
         });
 
-        const { error: pageviewsError } = await supabaseAdmin
+        const { error: pageviewsError } = await getSupabaseAdmin()
             .from('pageviews')
             .insert(pageviewsToInsert);
         if (pageviewsError) throw new Error(pageviewsError.message);
@@ -155,7 +155,7 @@ export async function POST(req: Request) {
             });
         }
 
-        const { error: leadsError } = await supabaseAdmin
+        const { error: leadsError } = await getSupabaseAdmin()
             .from('leads')
             .insert(leadsToInsert);
         if (leadsError) throw new Error(leadsError.message);

@@ -1,4 +1,4 @@
-import { supabaseAdmin } from '@/lib/supabase/admin';
+import { getSupabaseAdmin } from '@/lib/supabase/admin';
 
 export interface DateRange {
     from: string; // YYYY-MM-DD
@@ -9,9 +9,9 @@ export async function getProjectMetrics(projectId: string, dateRange?: DateRange
     // В реальном проекте здесь мы строим динамические SQL запросы (через Supabase RPC для скорости),
     // но для начала собираем данные через базовые запросы
     
-    let costsQuery = supabaseAdmin.from('ad_costs').select('*').eq('project_id', projectId);
-    let sessionsQuery = supabaseAdmin.from('sessions').select('id, utm_source').eq('project_id', projectId);
-    let leadsQuery = supabaseAdmin.from('leads').select('id, status, revenue').eq('project_id', projectId);
+    let costsQuery = getSupabaseAdmin().from('ad_costs').select('*').eq('project_id', projectId);
+    let sessionsQuery = getSupabaseAdmin().from('sessions').select('id, utm_source').eq('project_id', projectId);
+    let leadsQuery = getSupabaseAdmin().from('leads').select('id, status, revenue').eq('project_id', projectId);
 
     if (dateRange) {
         costsQuery = costsQuery.gte('date', dateRange.from).lte('date', dateRange.to);
