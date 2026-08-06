@@ -56,45 +56,59 @@ export default function DateRangePicker() {
     // Установка пресета 30 дней по умолчанию, если параметры в URL отсутствуют
     useEffect(() => {
         if (!defaultFrom || !defaultTo) {
-            handlePresetChange('30d');
-        } else {
-            // Если параметры уже есть в URL, синхронизируем локальный стейт
-            setFrom(defaultFrom);
-            setTo(defaultTo);
-            setPreset('custom'); // По умолчанию кастом, если не совпадает с логикой пресетов
+            // Calculate 30d without triggering a state cascade during render
+            const newTo = new Date();
+            const newFrom = new Date();
+            newFrom.setDate(newFrom.getDate() - 30);
+
+            const fromStr = newFrom.toISOString().split('T')[0];
+            const toStr = newTo.toISOString().split('T')[0];
+
+            const currentParams = new URLSearchParams(searchParams.toString());
+            currentParams.set('from', fromStr);
+            currentParams.set('to', toStr);
+            router.push(`${pathname}?${currentParams.toString()}`);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [defaultFrom, defaultTo]);
 
+    // Update state to match URL params if they exist and are different
+    if (defaultFrom && defaultTo && (defaultFrom !== from || defaultTo !== to)) {
+        setFrom(defaultFrom);
+        setTo(defaultTo);
+        setPreset('custom');
+    }
+
     return (
-        <div className="flex gap-2 items-center bg-slate-900 border border-slate-800 p-1.5 rounded-xl shadow-inner">
+        <div className="flex gap-2 items-center bg-white border border-slate-200 p-1.5 rounded-xl shadow-sm hover:border-slate-300 transition-colors">
             <Calendar size={16} className="text-slate-400 ml-2" />
             <select 
                 value={preset} 
                 onChange={(e) => handlePresetChange(e.target.value)}
-                className="bg-transparent text-sm font-medium focus:outline-none cursor-pointer text-slate-200 pr-2 border-none"
+                className="bg-transparent text-sm font-medium focus:outline-none cursor-pointer text-slate-700 pr-2 border-none appearance-none"
             >
-                <option value="today" className="bg-slate-950 text-white">Сегодня</option>
-                <option value="yesterday" className="bg-slate-950 text-white">Вчера</option>
-                <option value="7d" className="bg-slate-950 text-white">Последние 7 дней</option>
-                <option value="30d" className="bg-slate-950 text-white">Последние 30 дней</option>
-                <option value="month" className="bg-slate-950 text-white">Этот месяц</option>
-                <option value="custom" className="bg-slate-950 text-white">Свой период</option>
+                <option value="today" className="bg-white text-slate-900">Сегодня</option>
+                <option value="yesterday" className="bg-white text-slate-900">Вчера</option>
+                <option value="7d" className="bg-white text-slate-900">Последние 7 дней</option>
+                <option value="30d" className="bg-white text-slate-900">Последние 30 дней</option>
+                <option value="month" className="bg-white text-slate-900">Этот месяц</option>
+                <option value="custom" className="bg-white text-slate-900">Свой период</option>
             </select>
             
             {preset === 'custom' && (
-                <div className="flex items-center gap-2 border-l border-slate-800 pl-2 animation-fade-in">
+                <div className="flex items-center gap-2 border-l border-slate-200 pl-2 ml-1 animation-fade-in">
                     <input 
                         type="date" 
                         value={from} 
                         onChange={(e) => setDates(e.target.value, to, 'custom')}
-                        className="bg-transparent text-xs text-slate-300 focus:outline-none cursor-pointer"
+                        className="bg-transparent text-xs text-slate-600 focus:outline-none cursor-pointer"
                     />
-                    <span className="text-slate-500 text-xs">до</span>
+                    <span className="text-slate-400 text-xs font-medium">до</span>
                     <input 
                         type="date" 
                         value={to} 
                         onChange={(e) => setDates(from, e.target.value, 'custom')}
-                        className="bg-transparent text-xs text-slate-300 focus:outline-none cursor-pointer"
+                        className="bg-transparent text-xs text-slate-600 focus:outline-none cursor-pointer"
                     />
                 </div>
             )}
