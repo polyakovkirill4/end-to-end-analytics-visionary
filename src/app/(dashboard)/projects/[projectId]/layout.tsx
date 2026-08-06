@@ -88,7 +88,7 @@ export default async function ProjectLayout(props: {
                 {/* Scrollable Content */}
                 <div className="flex-1 overflow-y-auto p-8">
                     <div className="max-w-7xl mx-auto">
-                        {children}
+                        {props.children}
                     </div>
                 </div>
             </main>

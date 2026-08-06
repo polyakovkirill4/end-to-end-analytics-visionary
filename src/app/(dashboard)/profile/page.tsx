@@ -24,7 +24,8 @@ export default async function ProfilePage() {
         .eq('user_id', user.id)
         .single();
 
-    const orgName = member?.organizations?.name || 'Нет организации';
+    const organizations = member?.organizations as unknown as {name: string};
+    const orgName = organizations?.name || 'Нет организации';
     const orgRole = member?.role || 'Нет роли';
     const isOrgAdmin = orgRole === 'owner' || orgRole === 'admin';
 

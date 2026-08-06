@@ -25,7 +25,7 @@ export async function POST(req: Request) {
 
         const now = new Date();
         const sessionsToInsert = [];
-        const costsToInsert = [];
+        const costsToInsert: any[] = [];
         
         // Генерируем данные за последние 30 дней
         for (let i = 29; i >= 0; i--) {
