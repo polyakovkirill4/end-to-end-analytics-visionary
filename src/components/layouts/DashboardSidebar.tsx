@@ -27,6 +27,7 @@ const menuItems = [
 ];
 
 const bottomItems = [
+  { name: 'Команда', href: '/team', icon: Users },
   { name: 'Настройки', href: '/settings', icon: Settings },
   { name: 'Мой профиль', href: '/profile', icon: UserCircle },
 ];
